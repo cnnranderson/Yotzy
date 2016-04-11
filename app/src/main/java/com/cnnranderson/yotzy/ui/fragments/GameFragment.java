@@ -225,9 +225,9 @@ public class GameFragment extends BaseFragment {
      */
     private void initPreviousScores() {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String saveScore = String.valueOf(score);
         if (sp.contains("low")) {
             int val = sp.getInt("low", -1);
+            String saveScore = String.valueOf(val);
             if (val == -1) {
                 lowscore.setText("");
             } else {
@@ -237,6 +237,7 @@ public class GameFragment extends BaseFragment {
 
         if (sp.contains("high")) {
             int val = sp.getInt("high", -1);
+            String saveScore = String.valueOf(val);
             if (val == -1) {
                 highscore.setText("");
             } else {
