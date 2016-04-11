@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Yotzy</string>
+    <string name="app_name">Yötzy</string>
 
-    <string name="roll">Roll Dice!</string>
+    <string name="roll">Roll Dice! (3)</string>
 </resources>

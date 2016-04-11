@@ -290,7 +290,7 @@
                 android:layout_height="wrap_content"
                 android:paddingBottom="4dp"
                 android:paddingTop="4dp"
-                android:text="Yotzy"
+                android:text="Yötzy!"
                 android:textSize="20sp" />
         </LinearLayout>
     </GridLayout>
@@ -330,7 +330,8 @@
             android:scaleX="1.25"
             android:scaleY="1.25"
             android:src="@drawable/ic_dice_1_white_48dp"
-            android:tint="@color/diceMain" />
+            android:tint="@color/diceMain"
+            android:contentDescription="00" />
 
         <ImageButton
             android:id="@+id/die2"
@@ -341,7 +342,8 @@
             android:scaleX="1.25"
             android:scaleY="1.25"
             android:src="@drawable/ic_dice_1_white_48dp"
-            android:tint="@color/diceMain" />
+            android:tint="@color/diceMain"
+            android:contentDescription="01" />
 
         <ImageButton
             android:id="@+id/die3"
@@ -352,7 +354,8 @@
             android:scaleX="1.25"
             android:scaleY="1.25"
             android:src="@drawable/ic_dice_1_white_48dp"
-            android:tint="@color/diceMain" />
+            android:tint="@color/diceMain"
+            android:contentDescription="02" />
 
         <ImageButton
             android:id="@+id/die4"
@@ -363,7 +366,8 @@
             android:scaleX="1.25"
             android:scaleY="1.25"
             android:src="@drawable/ic_dice_1_white_48dp"
-            android:tint="@color/diceMain" />
+            android:tint="@color/diceMain"
+            android:contentDescription="03" />
 
         <ImageButton
             android:id="@+id/die5"
@@ -374,6 +378,7 @@
             android:scaleX="1.25"
             android:scaleY="1.25"
             android:src="@drawable/ic_dice_1_white_48dp"
-            android:tint="@color/diceMain" />
+            android:tint="@color/diceMain"
+            android:contentDescription="04"/>
     </GridLayout>
 </RelativeLayout>
