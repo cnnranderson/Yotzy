@@ -10,11 +10,9 @@
 .idea/*
 .idea/*/*
 /build
-app/build.gradle
 app/.gitignore
 gradle.properties
 *.jar
 gradle-wrapper.properties
 gradlew
 *.bat
-
