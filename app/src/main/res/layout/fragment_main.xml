@@ -1,6 +1,379 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/diceBackground">
 
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/scorebar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingTop="56dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:padding="12dp"
+            android:text="POINTS:"
+            android:textSize="28sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:padding="12dp"
+            android:text="367"
+            android:textSize="28sp" />
+    </LinearLayout>
+
+    <GridLayout
+        android:id="@+id/point_grid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/scorebar"
+        android:layout_centerInParent="true"
+        android:background="@color/colorAccent"
+        android:alignmentMode="alignBounds"
+
+        android:columnCount="2"
+        android:rowCount="7">
+
+        <!-- !!!!!!!!!!!!!!!!!!
+                  Singles
+             !!!!!!!!!!!!!!!!!! -->
+        <LinearLayout
+            android:layout_column="0"
+            android:layout_columnSpan="1"
+            android:layout_columnWeight=".5"
+            android:layout_row="0"
+            android:background="@color/diceBackground"
+            android:padding="8dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginEnd="1dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="4dp"
+                android:paddingTop="4dp"
+                android:text="Ones"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_column="0"
+            android:layout_columnSpan="1"
+            android:layout_columnWeight=".5"
+            android:layout_row="1"
+            android:background="@color/diceBackground"
+            android:padding="8dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginEnd="1dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="4dp"
+                android:paddingTop="4dp"
+                android:text="Twos"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_column="0"
+            android:layout_columnSpan="1"
+            android:layout_columnWeight=".5"
+            android:layout_row="2"
+            android:background="@color/diceBackground"
+            android:padding="8dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginEnd="1dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="4dp"
+                android:paddingTop="4dp"
+                android:text="Threes"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_column="0"
+            android:layout_columnSpan="1"
+            android:layout_columnWeight=".5"
+            android:layout_row="3"
+            android:background="@color/diceBackground"
+            android:padding="8dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginEnd="1dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="4dp"
+                android:paddingTop="4dp"
+                android:text="Fours"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_column="0"
+            android:layout_columnSpan="1"
+            android:layout_columnWeight=".5"
+            android:layout_row="4"
+            android:background="@color/diceBackground"
+            android:padding="8dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginEnd="1dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="4dp"
+                android:paddingTop="4dp"
+                android:text="Fives"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_column="0"
+            android:layout_columnSpan="1"
+            android:layout_columnWeight=".5"
+            android:layout_row="5"
+            android:background="@color/diceBackground"
+            android:padding="8dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginEnd="1dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="4dp"
+                android:paddingTop="4dp"
+                android:text="Sixes"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <!-- !!!!!!!!!!!!!!!!!!
+                   Combos
+             !!!!!!!!!!!!!!!!!! -->
+        <LinearLayout
+            android:layout_column="1"
+            android:layout_columnSpan="1"
+            android:layout_columnWeight=".5"
+            android:layout_row="0"
+            android:background="@color/diceBackground"
+            android:padding="8dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginStart="1dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="4dp"
+                android:paddingTop="4dp"
+                android:text="3 of a Kind"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_column="1"
+            android:layout_columnSpan="1"
+            android:layout_columnWeight=".5"
+            android:layout_row="1"
+            android:background="@color/diceBackground"
+            android:padding="8dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginStart="1dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="4dp"
+                android:paddingTop="4dp"
+                android:text="4 of a Kind"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_column="1"
+            android:layout_columnSpan="1"
+            android:layout_columnWeight=".5"
+            android:layout_row="2"
+            android:background="@color/diceBackground"
+            android:padding="8dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginStart="1dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="4dp"
+                android:paddingTop="4dp"
+                android:text="Full House"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_column="1"
+            android:layout_columnSpan="1"
+            android:layout_columnWeight=".5"
+            android:layout_row="3"
+            android:background="@color/diceBackground"
+            android:padding="8dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginStart="1dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="4dp"
+                android:paddingTop="4dp"
+                android:text="Sm. Straight"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_column="1"
+            android:layout_columnSpan="1"
+            android:layout_columnWeight=".5"
+            android:layout_row="4"
+            android:background="@color/diceBackground"
+            android:padding="8dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginStart="1dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="4dp"
+                android:paddingTop="4dp"
+                android:text="Lg. Straight"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_column="1"
+            android:layout_columnSpan="1"
+            android:layout_columnWeight=".5"
+            android:layout_row="5"
+            android:background="@color/diceBackground"
+            android:padding="8dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginStart="1dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="4dp"
+                android:paddingTop="4dp"
+                android:text="Chance"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_column="0"
+            android:layout_columnSpan="2"
+            android:layout_columnWeight="1"
+            android:layout_row="6"
+            android:background="@color/diceBackground"
+            android:padding="8dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="1dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="4dp"
+                android:paddingTop="4dp"
+                android:text="Yotzy"
+                android:textSize="20sp" />
+        </LinearLayout>
+    </GridLayout>
+
+    <Button
+        android:id="@+id/roll_dice"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:text="@string/roll"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <GridLayout
+        android:id="@+id/dice_grid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/roll_dice"
+        android:layout_centerInParent="true"
+        android:alignmentMode="alignBounds"
+
+        android:columnCount="5"
+        android:paddingEnd="12dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingStart="12dp"
+        android:useDefaultMargins="true">
+
+        <ImageButton
+            android:id="@+id/die1"
+            android:layout_column="0"
+            android:layout_columnWeight=".2"
+            android:layout_row="1"
+            android:background="?android:attr/selectableItemBackground"
+            android:scaleX="1.25"
+            android:scaleY="1.25"
+            android:src="@drawable/ic_dice_1_white_48dp"
+            android:tint="@color/diceMain" />
+
+        <ImageButton
+            android:id="@+id/die2"
+            android:layout_column="1"
+            android:layout_columnWeight=".2"
+            android:layout_row="1"
+            android:background="?android:attr/selectableItemBackground"
+            android:scaleX="1.25"
+            android:scaleY="1.25"
+            android:src="@drawable/ic_dice_1_white_48dp"
+            android:tint="@color/diceMain" />
+
+        <ImageButton
+            android:id="@+id/die3"
+            android:layout_column="2"
+            android:layout_columnWeight=".2"
+            android:layout_row="1"
+            android:background="?android:attr/selectableItemBackground"
+            android:scaleX="1.25"
+            android:scaleY="1.25"
+            android:src="@drawable/ic_dice_1_white_48dp"
+            android:tint="@color/diceMain" />
+
+        <ImageButton
+            android:id="@+id/die4"
+            android:layout_column="3"
+            android:layout_columnWeight=".2"
+            android:layout_row="1"
+            android:background="?android:attr/selectableItemBackground"
+            android:scaleX="1.25"
+            android:scaleY="1.25"
+            android:src="@drawable/ic_dice_1_white_48dp"
+            android:tint="@color/diceMain" />
+
+        <ImageButton
+            android:id="@+id/die5"
+            android:layout_column="4"
+            android:layout_columnWeight=".2"
+            android:layout_row="1"
+            android:background="?android:attr/selectableItemBackground"
+            android:scaleX="1.25"
+            android:scaleY="1.25"
+            android:src="@drawable/ic_dice_1_white_48dp"
+            android:tint="@color/diceMain" />
+    </GridLayout>
+</RelativeLayout>
