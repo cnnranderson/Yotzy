@@ -2,6 +2,7 @@ package com.cnnranderson.yotzy.ui.fragments;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.AlertDialog;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -10,6 +11,7 @@ import android.view.ViewAnimationUtils;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.cnnranderson.yotzy.R;
 
@@ -37,6 +39,8 @@ public class GameFragment extends BaseFragment {
     List<ImageButton> diceButtons;
     @Bind(R.id.roll_dice)
     Button rollDiceButton;
+    @Bind(R.id.score)
+    TextView scoreTextView;
     @Bind({
             R.id.one_score,
             R.id.two_score,
@@ -105,39 +109,43 @@ public class GameFragment extends BaseFragment {
 
     @OnClick(R.id.roll_dice)
     public void rollDice() {
-        newGameStart = false;
-        rollDiceButton.setEnabled(false);
-        if (rollsLeft == 3) {
-            resetDice();
+        if(rollsLeft >= 0) {
+            newGameStart = false;
+            rollDiceButton.setEnabled(false);
+            if (rollsLeft == 3) {
+                resetDice();
+            }
+            rollsLeft--;
+            Observable.from(diceButtons)
+                    .doOnNext(this::showHideDice)
+                    .finallyDo(() -> {
+                        if (rollsLeft == 0) {
+                            rollsLeft = 3;
+                            rollDiceButton.setText("Next Round! (3)");
+                        } else {
+                            rollDiceButton.setText("Roll Dice! (" + rollsLeft + ")");
+                        }
+                    })
+                    .delay(500, TimeUnit.MILLISECONDS)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe();
         }
-        rollsLeft--;
-        Observable.from(diceButtons)
-                .doOnNext(this::showHideDice)
-                .finallyDo(() -> {
-                    if (rollsLeft == 0) {
-                        rollsLeft = 3;
-                        rollDiceButton.setText("Next Round! (3)");
-                    } else {
-                        rollDiceButton.setText("Roll Dice! (" + rollsLeft + ")");
-                    }
-                })
-                .delay(500, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe();
     }
 
     @OnClick({R.id.die1, R.id.die2, R.id.die3, R.id.die4, R.id.die5})
     public void dieSelected(ImageButton die) {
-        CharSequence desc = die.getContentDescription();
-        int diePos = Character.getNumericValue(desc.charAt(1));
-        if (desc.charAt(0) == '0') {
-            die.setColorFilter(ContextCompat.getColor(getActivity(), R.color.colorPrimaryLight), PorterDuff.Mode.MULTIPLY);
-            die.setContentDescription("1" + desc.charAt(1));
-            diceHeld[diePos] = true;
-        } else {
-            die.clearColorFilter();
-            die.setContentDescription("0" + desc.charAt(1));
-            diceHeld[diePos] = false;
+        if(rollsLeft != 3) {
+            CharSequence desc = die.getContentDescription();
+            int diePos = Character.getNumericValue(desc.charAt(1));
+            if (desc.charAt(0) == '0') {
+                die.setColorFilter(ContextCompat.getColor(getActivity(), R.color.colorPrimaryLight), PorterDuff.Mode.MULTIPLY);
+                die.setContentDescription("1" + desc.charAt(1));
+                diceHeld[diePos] = true;
+            } else {
+                die.clearColorFilter();
+                die.setContentDescription("0" + desc.charAt(1));
+                diceHeld[diePos] = false;
+            }
         }
     }
 
@@ -145,7 +153,33 @@ public class GameFragment extends BaseFragment {
             R.id.six_score, R.id.threekind_score, R.id.fourkind_score, R.id.fullhouse_score,
             R.id.smstr_score, R.id.lgstr_score, R.id.chance_score, R.id.yotzy_score})
     public void chooseScore(Button combo) {
-        int value = fetchDiceValueForCombo(combo.getTag().toString());
+        System.out.println("PRINTING" + combo.getTag().toString());
+        if(rollsLeft != 3 && combo.getText().equals("")) {
+            System.out.println("HELLO");
+            int value = fetchDiceValueForCombo(combo.getTag().toString());
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+            builder.setMessage("You will receive " + value + " points.")
+                    .setTitle("Choose " + combo.getTag().toString() + "?")
+                    .setNegativeButton("No", (dialog1, which) -> dialog1.dismiss())
+                    .setPositiveButton("Yes", (dialog2, which) -> {
+                        combo.setText("" + value);
+                        score += value;
+                        rollsLeft = 3;
+                        combos.put(combo.getTag().toString(), value);
+                        scoreTextView.setText("" + score);
+                        if(!checkWin()) {
+                            rollDiceButton.setText("Next Round! (3)");
+                        } else {
+                            rollsLeft = -1;
+                            rollDiceButton.setText("Game Over!");
+                        }
+                    });
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
     }
 
     private void initDice() {
@@ -173,6 +207,7 @@ public class GameFragment extends BaseFragment {
             System.out.println(combo + combos.get(combo));
             setScore(combo, combos.get(combo));
         }
+        scoreTextView.setText("" + score);
     }
 
     private void showHideDice(ImageButton die) {
@@ -272,5 +307,15 @@ public class GameFragment extends BaseFragment {
         switch(combo) {
 
         }
+        return 12;
+    }
+
+    private boolean checkWin() {
+        for(int val : combos.values()) {
+            if(val == -1) {
+                return false;
+            }
+        }
+        return true;
     }
 }
