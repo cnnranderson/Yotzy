@@ -13,6 +13,7 @@ import android.widget.ImageButton;
 
 import com.cnnranderson.yotzy.R;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -36,6 +37,22 @@ public class GameFragment extends BaseFragment {
     List<ImageButton> diceButtons;
     @Bind(R.id.roll_dice)
     Button rollDiceButton;
+    @Bind({
+            R.id.one_score,
+            R.id.two_score,
+            R.id.three_score,
+            R.id.four_score,
+            R.id.five_score,
+            R.id.six_score,
+            R.id.threekind_score,
+            R.id.fourkind_score,
+            R.id.fullhouse_score,
+            R.id.smstr_score,
+            R.id.lgstr_score,
+            R.id.chance_score,
+            R.id.yotzy_score
+    })
+    List<Button> gridScoreButtons;
 
     // Persisted game vars
     @State
@@ -45,7 +62,11 @@ public class GameFragment extends BaseFragment {
     @State
     int rollsLeft = 3;
     @State
-    boolean newGameStart = false;
+    int score = 0;
+    @State
+    HashMap<String, Integer> combos;
+    @State
+    boolean newGameStart = true;
 
     // Misc. Vars
     Random rand;
@@ -53,6 +74,20 @@ public class GameFragment extends BaseFragment {
     public GameFragment() {
         diceHeld = new boolean[]{false, false, false, false, false};
         diceNums = new int[]{0, 0, 0, 0, 0};
+        combos = new HashMap<>();
+        combos.put("one_score", -1);
+        combos.put("two_score", -1);
+        combos.put("three_score", -1);
+        combos.put("four_score", -1);
+        combos.put("five_score", -1);
+        combos.put("six_score", -1);
+        combos.put("threekind_score", -1);
+        combos.put("fourkind_score", -1);
+        combos.put("fullhouse_score", -1);
+        combos.put("smstr_score", -1);
+        combos.put("lgstr_score", -1);
+        combos.put("chance_score", -1);
+        combos.put("yotzy_score", -1);
     }
 
     @Override
@@ -60,6 +95,7 @@ public class GameFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         rand = new Random();
         initDice();
+        initGameBoard();
     }
 
     @Override
@@ -69,7 +105,11 @@ public class GameFragment extends BaseFragment {
 
     @OnClick(R.id.roll_dice)
     public void rollDice() {
+        newGameStart = false;
         rollDiceButton.setEnabled(false);
+        if (rollsLeft == 3) {
+            resetDice();
+        }
         rollsLeft--;
         Observable.from(diceButtons)
                 .doOnNext(this::showHideDice)
@@ -80,15 +120,36 @@ public class GameFragment extends BaseFragment {
                     } else {
                         rollDiceButton.setText("Roll Dice! (" + rollsLeft + ")");
                     }
-                    rollDiceButton.setEnabled(true);
                 })
                 .delay(500, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe();
     }
 
+    @OnClick({R.id.die1, R.id.die2, R.id.die3, R.id.die4, R.id.die5})
+    public void dieSelected(ImageButton die) {
+        CharSequence desc = die.getContentDescription();
+        int diePos = Character.getNumericValue(desc.charAt(1));
+        if (desc.charAt(0) == '0') {
+            die.setColorFilter(ContextCompat.getColor(getActivity(), R.color.colorPrimaryLight), PorterDuff.Mode.MULTIPLY);
+            die.setContentDescription("1" + desc.charAt(1));
+            diceHeld[diePos] = true;
+        } else {
+            die.clearColorFilter();
+            die.setContentDescription("0" + desc.charAt(1));
+            diceHeld[diePos] = false;
+        }
+    }
+
+    @OnClick({R.id.one_score, R.id.two_score, R.id.three_score, R.id.four_score, R.id.five_score,
+            R.id.six_score, R.id.threekind_score, R.id.fourkind_score, R.id.fullhouse_score,
+            R.id.smstr_score, R.id.lgstr_score, R.id.chance_score, R.id.yotzy_score})
+    public void chooseScore(Button combo) {
+        int value = fetchDiceValueForCombo(combo.getTag().toString());
+    }
+
     private void initDice() {
-        if (rollsLeft == 0) {
+        if ((rollsLeft == 0 || rollsLeft == 3) && !newGameStart) {
             rollsLeft = 3;
             rollDiceButton.setText("Next Round! (3)");
         } else {
@@ -107,18 +168,10 @@ public class GameFragment extends BaseFragment {
         }
     }
 
-    @OnClick({R.id.die1, R.id.die2, R.id.die3, R.id.die4, R.id.die5})
-    public void dieSelected(ImageButton die) {
-        CharSequence desc = die.getContentDescription();
-        int diePos = Character.getNumericValue(desc.charAt(1));
-        if (desc.charAt(0) == '0') {
-            die.setColorFilter(ContextCompat.getColor(getActivity(), R.color.colorPrimaryLight), PorterDuff.Mode.MULTIPLY);
-            die.setContentDescription("1" + desc.charAt(1));
-            diceHeld[diePos] = true;
-        } else {
-            die.clearColorFilter();
-            die.setContentDescription("0" + desc.charAt(1));
-            diceHeld[diePos] = false;
+    private void initGameBoard() {
+        for (String combo : combos.keySet()) {
+            System.out.println(combo + combos.get(combo));
+            setScore(combo, combos.get(combo));
         }
     }
 
@@ -139,7 +192,14 @@ public class GameFragment extends BaseFragment {
                 die.setImageDrawable(getActivity().getDrawable(getDiceImage(newNum)));
 
                 anim = ViewAnimationUtils.createCircularReveal(die, cx, cy, 0, finalRadius);
-                anim.setDuration(1000);
+                anim.setDuration(800);
+                anim.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        rollDiceButton.setEnabled(true);
+                    }
+                });
                 die.setVisibility(View.VISIBLE);
                 anim.start();
             } else {
@@ -153,6 +213,8 @@ public class GameFragment extends BaseFragment {
                     }
                 }).start();
             }
+        } else {
+            rollDiceButton.setEnabled(true);
         }
     }
 
@@ -182,6 +244,33 @@ public class GameFragment extends BaseFragment {
             die.clearColorFilter();
             CharSequence desc = die.getContentDescription();
             die.setContentDescription("0" + desc.charAt(1));
+        }
+    }
+
+    private void setScore(String comboName, int value) {
+        Button tv = getComboBox(comboName);
+        if (tv != null) {
+            if(value == -1) {
+                tv.setText("");
+            } else {
+                tv.setText("" + value);
+            }
+        }
+    }
+
+    private Button getComboBox(String comboName) {
+        for (Button tv : gridScoreButtons) {
+            String IdAsString = tv.getTag().toString();
+            if (IdAsString.contains(comboName)) {
+                return tv;
+            }
+        }
+        return null;
+    }
+
+    private int fetchDiceValueForCombo(String combo) {
+        switch(combo) {
+
         }
     }
 }
