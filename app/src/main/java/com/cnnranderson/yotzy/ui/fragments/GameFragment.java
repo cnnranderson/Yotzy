@@ -3,8 +3,10 @@ package com.cnnranderson.yotzy.ui.fragments;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.AlertDialog;
+import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewAnimationUtils;
@@ -41,6 +43,10 @@ public class GameFragment extends BaseFragment {
     Button rollDiceButton;
     @Bind(R.id.score)
     TextView scoreTextView;
+    @Bind(R.id.highscore)
+    TextView highscore;
+    @Bind(R.id.lowscore)
+    TextView lowscore;
     @Bind({
             R.id.one_score,
             R.id.two_score,
@@ -78,6 +84,7 @@ public class GameFragment extends BaseFragment {
     public GameFragment() {
         diceHeld = new boolean[]{false, false, false, false, false};
         diceNums = new int[]{0, 0, 0, 0, 0};
+        rand = new Random();
         combos = new HashMap<>();
         combos.put("one_score", -1);
         combos.put("two_score", -1);
@@ -97,7 +104,7 @@ public class GameFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        rand = new Random();
+        initPreviousScores();
         initDice();
         initGameBoard();
     }
@@ -109,7 +116,7 @@ public class GameFragment extends BaseFragment {
 
     @OnClick(R.id.roll_dice)
     public void rollDice() {
-        if(rollsLeft >= 0) {
+        if (rollsLeft > 0) {
             newGameStart = false;
             rollDiceButton.setEnabled(false);
             if (rollsLeft == 3) {
@@ -120,7 +127,6 @@ public class GameFragment extends BaseFragment {
                     .doOnNext(this::showHideDice)
                     .finallyDo(() -> {
                         if (rollsLeft == 0) {
-                            rollsLeft = 3;
                             rollDiceButton.setText("Next Round! (3)");
                         } else {
                             rollDiceButton.setText("Roll Dice! (" + rollsLeft + ")");
@@ -129,12 +135,38 @@ public class GameFragment extends BaseFragment {
                     .delay(500, TimeUnit.MILLISECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe();
+        } else if (rollsLeft == 0) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.StyledDialog);
+
+            builder.setMessage("You must choose a combo before rolling again!")
+                    .setTitle("Turn Not Yet Played")
+                    .setNegativeButton("OK", (dialog1, which) -> dialog1.dismiss());
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.StyledDialog);
+
+            builder.setMessage("Would you like to play again?")
+                    .setTitle("Game Over")
+                    .setNegativeButton("No", (dialog1, which) -> dialog1.dismiss())
+                    .setPositiveButton("Yes", (dialog2, which) -> {
+                        resetDice();
+                        resetBoard();
+                        initGameBoard();
+                        rollsLeft = 3;
+                        newGameStart = true;
+                        rollDiceButton.setText("Start Game! (3)");
+                    });
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
         }
     }
 
     @OnClick({R.id.die1, R.id.die2, R.id.die3, R.id.die4, R.id.die5})
     public void dieSelected(ImageButton die) {
-        if(rollsLeft != 3) {
+        if (rollsLeft != 3) {
             CharSequence desc = die.getContentDescription();
             int diePos = Character.getNumericValue(desc.charAt(1));
             if (desc.charAt(0) == '0') {
@@ -153,12 +185,10 @@ public class GameFragment extends BaseFragment {
             R.id.six_score, R.id.threekind_score, R.id.fourkind_score, R.id.fullhouse_score,
             R.id.smstr_score, R.id.lgstr_score, R.id.chance_score, R.id.yotzy_score})
     public void chooseScore(Button combo) {
-        System.out.println("PRINTING" + combo.getTag().toString());
-        if(rollsLeft != 3 && combo.getText().equals("")) {
-            System.out.println("HELLO");
+        if (combo.getText().equals("") && !newGameStart && rollsLeft != 3) {
             int value = fetchDiceValueForCombo(combo.getTag().toString());
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.StyledDialog);
 
             builder.setMessage("You will receive " + value + " points.")
                     .setTitle("Choose " + combo.getTag().toString() + "?")
@@ -169,11 +199,12 @@ public class GameFragment extends BaseFragment {
                         rollsLeft = 3;
                         combos.put(combo.getTag().toString(), value);
                         scoreTextView.setText("" + score);
-                        if(!checkWin()) {
+                        if (!checkWin()) {
                             rollDiceButton.setText("Next Round! (3)");
                         } else {
                             rollsLeft = -1;
                             rollDiceButton.setText("Game Over!");
+                            saveScore();
                         }
                     });
 
@@ -182,10 +213,32 @@ public class GameFragment extends BaseFragment {
         }
     }
 
+    private void initPreviousScores() {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        if (sp.contains("low")) {
+            int val = sp.getInt("low", -1);
+            if (val == -1) {
+                lowscore.setText("");
+            } else {
+                lowscore.setText("" + val);
+            }
+        }
+
+        if (sp.contains("high")) {
+            int val = sp.getInt("high", -1);
+            if (val == -1) {
+                highscore.setText("");
+            } else {
+                highscore.setText("" + val);
+            }
+        }
+    }
+
     private void initDice() {
         if ((rollsLeft == 0 || rollsLeft == 3) && !newGameStart) {
-            rollsLeft = 3;
             rollDiceButton.setText("Next Round! (3)");
+        } else if (newGameStart) {
+            rollDiceButton.setText("Start Game! (3)");
         } else {
             rollDiceButton.setText("Roll Dice! (" + rollsLeft + ")");
         }
@@ -204,7 +257,6 @@ public class GameFragment extends BaseFragment {
 
     private void initGameBoard() {
         for (String combo : combos.keySet()) {
-            System.out.println(combo + combos.get(combo));
             setScore(combo, combos.get(combo));
         }
         scoreTextView.setText("" + score);
@@ -227,7 +279,7 @@ public class GameFragment extends BaseFragment {
                 die.setImageDrawable(getActivity().getDrawable(getDiceImage(newNum)));
 
                 anim = ViewAnimationUtils.createCircularReveal(die, cx, cy, 0, finalRadius);
-                anim.setDuration(800);
+                anim.setDuration(600);
                 anim.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
@@ -282,10 +334,28 @@ public class GameFragment extends BaseFragment {
         }
     }
 
+    private void resetBoard() {
+        combos.put("one_score", -1);
+        combos.put("two_score", -1);
+        combos.put("three_score", -1);
+        combos.put("four_score", -1);
+        combos.put("five_score", -1);
+        combos.put("six_score", -1);
+        combos.put("threekind_score", -1);
+        combos.put("fourkind_score", -1);
+        combos.put("fullhouse_score", -1);
+        combos.put("smstr_score", -1);
+        combos.put("lgstr_score", -1);
+        combos.put("chance_score", -1);
+        combos.put("yotzy_score", -1);
+        score = 0;
+        scoreTextView.setText("0");
+    }
+
     private void setScore(String comboName, int value) {
         Button tv = getComboBox(comboName);
         if (tv != null) {
-            if(value == -1) {
+            if (value == -1) {
                 tv.setText("");
             } else {
                 tv.setText("" + value);
@@ -303,19 +373,168 @@ public class GameFragment extends BaseFragment {
         return null;
     }
 
-    private int fetchDiceValueForCombo(String combo) {
-        switch(combo) {
-
+    private void saveScore() {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        if (sp.contains("low")) {
+            if (sp.getInt("low", 99999) > score) {
+                sp.edit().putInt("low", score).apply();
+                lowscore.setText("" + score);
+            }
+        } else {
+            sp.edit().putInt("low", score).apply();
+            lowscore.setText("" + score);
         }
-        return 12;
+
+        if (sp.contains("high")) {
+            if (sp.getInt("high", 0) < score) {
+                sp.edit().putInt("high", score).apply();
+                highscore.setText("" + score);
+            }
+        } else {
+            sp.edit().putInt("high", score).apply();
+            highscore.setText("" + score);
+        }
+    }
+
+    private int fetchDiceValueForCombo(String combo) {
+        switch (combo) {
+            case "one_score":
+                return checkSingle(1);
+            case "two_score":
+                return checkSingle(2);
+            case "three_score":
+                return checkSingle(3);
+            case "four_score":
+                return checkSingle(4);
+            case "five_score":
+                return checkSingle(5);
+            case "six_score":
+                return checkSingle(6);
+            case "threekind_score":
+                return checkMulti(3);
+            case "fourkind_score":
+                return checkMulti(4);
+            case "fullhouse_score":
+                return checkFullHouse();
+            case "smstr_score":
+                return checkStraight(0);
+            case "lgstr_score":
+                return checkStraight(1);
+            case "chance_score":
+                return diceSum();
+            case "yotzy_score":
+                if (checkYotzy()) {
+                    return 50;
+                } else {
+                    return 0;
+                }
+            default:
+                return 0;
+        }
     }
 
     private boolean checkWin() {
-        for(int val : combos.values()) {
-            if(val == -1) {
+        for (int val : combos.values()) {
+            if (val == -1) {
                 return false;
             }
         }
         return true;
+    }
+
+    private boolean checkYotzy() {
+        int num = diceNums[0];
+        for (int i : diceNums) {
+            if (i != num) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private int checkSingle(int id) {
+        int sum = 0;
+        for (int i : diceNums) {
+            if (i + 1 == id) {
+                sum += id;
+            }
+        }
+        return sum;
+    }
+
+    private int checkMulti(int id) {
+        for (int i = 1; i < 7; i++) {
+            if (getDiceCount(i) >= id) {
+                return diceSum();
+            }
+        }
+        return 0;
+    }
+
+    private int checkStraight(int id) {
+        switch (id) {
+            case 0:
+                for (int i = 0; i < 3; i++) {
+                    if (contains(i) && contains(i + 1) && contains(i + 2) && contains(i + 3)) {
+                        return 30;
+                    }
+                }
+                return 0;
+            case 1:
+                if ((contains(0) && contains(1) && contains(2)
+                        && contains(3) && contains(4))
+                        || (contains(1) && contains(2) && contains(3)
+                        && contains(4) && contains(5))) {
+                    return 40;
+                }
+                return 0;
+            default:
+                return 0;
+        }
+    }
+
+    private boolean contains(int key) {
+        for (int i : diceNums) {
+            if (i == key) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private int getDiceCount(int id) {
+        int count = 0;
+        for (int i : diceNums) {
+            if (i == id) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private int diceSum() {
+        int sum = 0;
+        for (int i : diceNums) {
+            sum += i + 1;
+        }
+        return sum;
+    }
+
+    private int checkFullHouse() {
+        int id_two = -1;
+        int id_three = -1;
+        for (int i : diceNums) {
+            if (getDiceCount(i) == 2) {
+                id_two = i;
+            }
+            if (getDiceCount(i) == 3) {
+                id_three = i;
+            }
+        }
+        if (id_two != -1 && id_three != -1) {
+            return 25;
+        } else {
+            return 0;
+        }
     }
 }

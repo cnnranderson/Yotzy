@@ -7,6 +7,8 @@
 
         <item name="android:textViewStyle">@style/RobotoTextViewStyle</item>
         <item name="android:buttonStyle">@style/RobotoButtonStyle</item>
+
+        <item name="alertDialogTheme">@style/StyledDialog</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -15,6 +17,12 @@
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="StyledDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:textColorPrimary">#FFFFFF</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="RobotoTextViewStyle" parent="android:Widget.TextView">

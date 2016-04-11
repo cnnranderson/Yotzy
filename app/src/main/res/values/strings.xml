@@ -2,4 +2,7 @@
     <string name="app_name">Yötzy</string>
 
     <string name="roll">Start Game! (3)</string>
+    <string name="lowest_score_title">Lowest Score:</string>
+    <string name="highest_score_title">Highest Score:</string>
+    <string name="points_title">POINTS:</string>
 </resources>
