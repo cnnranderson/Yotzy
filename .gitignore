@@ -1,3 +1,4 @@
+*.idea
 *.iml
 .gradle
 /local.properties
@@ -16,3 +17,9 @@ gradle.properties
 gradle-wrapper.properties
 gradlew
 *.bat
+
+/.project
+/.settings
+/app/.classpath
+/app/.project
+/app/.settings
