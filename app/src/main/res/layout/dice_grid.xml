@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dice_grid"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_centerInParent="true"
+    android:alignmentMode="alignBounds"
+
+    android:columnCount="5"
+    android:paddingEnd="12dp"
+    android:paddingLeft="12dp"
+    android:paddingRight="12dp"
+    android:paddingStart="12dp"
+    android:useDefaultMargins="true">
+
+    <ImageButton
+        android:id="@+id/die1"
+        android:layout_column="0"
+        android:layout_columnWeight=".2"
+        android:layout_row="1"
+        android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="00"
+        android:scaleX="1.25"
+        android:scaleY="1.25"
+        android:src="@drawable/ic_dice_1_white_48dp"
+        android:tint="@color/diceMain" />
+
+    <ImageButton
+        android:id="@+id/die2"
+        android:layout_column="1"
+        android:layout_columnWeight=".2"
+        android:layout_row="1"
+        android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="01"
+        android:scaleX="1.25"
+        android:scaleY="1.25"
+        android:src="@drawable/ic_dice_1_white_48dp"
+        android:tint="@color/diceMain" />
+
+    <ImageButton
+        android:id="@+id/die3"
+        android:layout_column="2"
+        android:layout_columnWeight=".2"
+        android:layout_row="1"
+        android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="02"
+        android:scaleX="1.25"
+        android:scaleY="1.25"
+        android:src="@drawable/ic_dice_1_white_48dp"
+        android:tint="@color/diceMain" />
+
+    <ImageButton
+        android:id="@+id/die4"
+        android:layout_column="3"
+        android:layout_columnWeight=".2"
+        android:layout_row="1"
+        android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="03"
+        android:scaleX="1.25"
+        android:scaleY="1.25"
+        android:src="@drawable/ic_dice_1_white_48dp"
+        android:tint="@color/diceMain" />
+
+    <ImageButton
+        android:id="@+id/die5"
+        android:layout_column="4"
+        android:layout_columnWeight=".2"
+        android:layout_row="1"
+        android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="04"
+        android:scaleX="1.25"
+        android:scaleY="1.25"
+        android:src="@drawable/ic_dice_1_white_48dp"
+        android:tint="@color/diceMain" />
+</GridLayout>

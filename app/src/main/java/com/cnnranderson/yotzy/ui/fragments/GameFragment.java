@@ -51,12 +51,12 @@ public class GameFragment extends BaseFragment {
     List<Button> gridScoreButtons;
 
     // Persisted game vars
-    @State private boolean newGameStart = true;
-    @State private boolean[] diceHeld;
-    @State private int[] diceNums;
-    @State private int rollsLeft = 3;
-    @State private int score = 0;
-    @State private HashMap<String, Integer> combos;
+    @State boolean newGameStart = true;
+    @State boolean[] diceHeld;
+    @State int[] diceNums;
+    @State int rollsLeft = 3;
+    @State int score = 0;
+    @State HashMap<String, Integer> combos;
 
     // Misc. Vars
     private Random rand;
@@ -426,7 +426,7 @@ public class GameFragment extends BaseFragment {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String saveScore = String.valueOf(score);
         if (sp.contains("low")) {
-            if (sp.getInt("low", 99999) > score) {
+            if (sp.getInt("low", Integer.MAX_VALUE) > score) {
                 sp.edit().putInt("low", score).apply();
                 lowscore.setText(saveScore);
             }

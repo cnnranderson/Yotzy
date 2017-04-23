@@ -6,5 +6,5 @@
     <color name="colorAccent">#FF9800</color>
 
     <color name="diceMain">#009688</color>
-    <color name="diceBackground">#FBC02D</color>
+    <color name="diceBackground">#FFC107</color>
 </resources>
