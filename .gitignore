@@ -1,18 +1,14 @@
 *.idea
 *.iml
-.gradle
 /local.properties
-/.idea/workspace.xml
-/.idea/libraries
 .DS_Store
 /build
 /captures
 
-.idea/*
-.idea/*/*
+.idea
+.gradle
 /build
 *.jar
-*.bat
 
 /.project
 /.settings
@@ -21,3 +17,6 @@
 /app/.settings
 /app/build/*
 /app/build/
+
+
+app/manifest-merger-release-report.txt
