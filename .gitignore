@@ -11,11 +11,7 @@
 .idea/*
 .idea/*/*
 /build
-app/.gitignore
-gradle.properties
 *.jar
-gradle-wrapper.properties
-gradlew
 *.bat
 
 /.project
@@ -23,3 +19,5 @@ gradlew
 /app/.classpath
 /app/.project
 /app/.settings
+/app/build/*
+/app/build/
