@@ -1,0 +1,60 @@
+language: android
+jdk: oraclejdk8
+sudo: false
+
+env:
+  global:
+    - ADB_INSTALL_TIMEOUT=10
+    - ANDROID_API_LEVEL=25
+    - ANDROID_ABI=armeabi-v7a
+    - ANDROID_TAG=google_apis
+
+android:
+  components:
+    # Required Android components
+    - tools
+    - tools # Updates repo xml that travis has
+    - platform-tools
+    - build-tools-25.0.2
+    - android-$ANDROID_API_LEVEL
+
+    # Libraries and addons
+    - extra-google-google_play_services
+    - addon-google_apis-google-$ANDROID_API_LEVEL
+    - extra-android-m2repository
+    - extra-google-m2repository
+    - extra-android-support
+
+    # System images
+    - sys-img-armeabi-v7a-android-$ANDROID_API_LEVEL
+
+# Component Licenses
+licenses:
+  - 'android-sdk-preview-license-.+'
+  - 'android-sdk-license-.+'
+  - 'google-gdk-license-.+'
+
+# Gradle Caching
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+  directories: # Cache gradle folders to help speed up builds
+    - $HOME/.gradle/daemon
+    - $HOME/.gradle/native
+    - $HOME/.gradle/wrapper
+
+# Setup Emulator for instrumentation tests -- currently broken for android-25
+before_script:
+#  - echo no | android create avd --force -n test -t "android-"$ANDROID_API_LEVEL --abi $ANDROID_ABI
+#  - emulator -avd test -no-window &
+#  - android-wait-for-emulator
+
+# Begin Build and Testing (Instrument & Unit)
+script:
+# - ./gradlew connectedCheck -PdisablePreDex --stacktrace
+  - ./gradlew testDebugUnitTest --stacktrace
+
+after_failure:
+  - "cat $TRAVIS_BUILD_DIR/app/build/outputs/lint-results-debug.xml"
