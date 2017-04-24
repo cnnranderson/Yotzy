@@ -1,8 +1,9 @@
-package com.cnnranderson.yotzy.ui.fragments;
+package com.cnnranderson.yotzy.module.game;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -16,32 +17,42 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.cnnranderson.yotzy.R;
+import com.cnnranderson.yotzy.module.base.BaseFragment;
+import com.cnnranderson.yotzy.module.base.BasePresenter;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-import butterknife.Bind;
+import javax.inject.Inject;
+
+import butterknife.BindView;
+import butterknife.BindViews;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import icepick.State;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
+import io.reactivex.Observable;
+import io.reactivex.schedulers.Schedulers;
 
 public class GameFragment extends BaseFragment {
 
+    @Inject
+    GamePresenter mPresenter;
+
     // Binded Views
-    @Bind(R.id.roll_dice)
+    @BindView(R.id.roll_dice)
     Button rollDiceButton;
-    @Bind(R.id.score)
+    @BindView(R.id.score)
     TextView scoreTextView;
-    @Bind(R.id.highscore)
+    @BindView(R.id.highscore)
     TextView highscore;
-    @Bind(R.id.lowscore)
+    @BindView(R.id.lowscore)
     TextView lowscore;
-    @Bind({ R.id.die1, R.id.die2, R.id.die3, R.id.die4, R.id.die5 })
+    @BindViews({ R.id.die1, R.id.die2, R.id.die3, R.id.die4, R.id.die5 })
     List<ImageButton> diceButtons;
-    @Bind({
+    @BindViews({
             R.id.one_score, R.id.two_score, R.id.three_score,
             R.id.four_score, R.id.five_score, R.id.six_score,
             R.id.threekind_score, R.id.fourkind_score,
@@ -61,10 +72,17 @@ public class GameFragment extends BaseFragment {
     // Misc. Vars
     private Random rand;
 
-    /**
-     * Game Fragment Constructor -- Builds the initial variables for the game
-     */
-    public GameFragment() {
+    public static Fragment newInstance() {
+        GameFragment fragment = new GameFragment();
+        fragment.setArguments(new Bundle());
+        return fragment;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Setup game
         diceHeld = new boolean[]{ false, false, false, false, false };
         diceNums = new int[]{ 0, 0, 0, 0, 0 };
         rand = new Random();
@@ -84,20 +102,24 @@ public class GameFragment extends BaseFragment {
         combos.put("lgstr_score", -1);
         combos.put("chance_score", -1);
         combos.put("yotzy_score", -1);
-    }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        // Setup game
         initPreviousScores();
         initDice();
         initGameBoard();
     }
 
     @Override
-    protected int getFragmentLayout() {
+    protected BasePresenter getPresenter() {
+        return mPresenter;
+    }
+
+    @Override
+    protected Unbinder bindViews(View view) {
+        return ButterKnife.bind(this, view);
+    }
+
+    @Override
+    protected int getLayoutId() {
         return R.layout.fragment_main;
     }
 
@@ -114,9 +136,11 @@ public class GameFragment extends BaseFragment {
             rollsLeft--;
 
             // Roll the dice!
-            Observable.from(diceButtons)
+
+            Observable.just(diceButtons)
+                    .flatMapIterable(diceButtons -> diceButtons)
                     .doOnNext(this::showHideDice)
-                    .finallyDo(() -> {
+                    .doFinally(() -> {
                         if (rollsLeft == 0) {
                             rollDiceButton.setText("Next Round! (3)");
                         } else {
@@ -124,7 +148,7 @@ public class GameFragment extends BaseFragment {
                         }
                     })
                     .delay(500, TimeUnit.MILLISECONDS)
-                    .observeOn(AndroidSchedulers.mainThread())
+                    .observeOn(Schedulers.io())
                     .subscribe();
 
         } else if (rollsLeft == 0) {
@@ -338,12 +362,12 @@ public class GameFragment extends BaseFragment {
      */
     private int getDiceImage(int num) {
         switch (num) {
-            case 0: return R.drawable.ic_dice_1_white_48dp;
-            case 1: return R.drawable.ic_dice_2_white_48dp;
-            case 2: return R.drawable.ic_dice_3_white_48dp;
-            case 3: return R.drawable.ic_dice_4_white_48dp;
-            case 4: return R.drawable.ic_dice_5_white_48dp;
             case 5: return R.drawable.ic_dice_6_white_48dp;
+            case 4: return R.drawable.ic_dice_5_white_48dp;
+            case 3: return R.drawable.ic_dice_4_white_48dp;
+            case 2: return R.drawable.ic_dice_3_white_48dp;
+            case 1: return R.drawable.ic_dice_2_white_48dp;
+            case 0:
             default:
                 return R.drawable.ic_dice_1_white_48dp;
         }
