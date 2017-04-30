@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.google.gms.google-services'
 
 repositories {
     mavenCentral()
@@ -14,7 +13,7 @@ android {
         applicationId "com.cnnranderson.yotzy"
 
         versionCode 1
-        versionName "0.1.0"
+        versionName "0.1.1"
 
         minSdkVersion 21
         targetSdkVersion 25
@@ -46,12 +45,10 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            versionNameSuffix "-release"
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
             testCoverageEnabled true
-            versionNameSuffix "-debug"
         }
     }
 }
@@ -76,6 +73,12 @@ dependencies {
     compile "com.android.support:preference-v7:${supportLibraryVersion}"
     compile "com.android.support:recyclerview-v7:${supportLibraryVersion}"
     compile "com.android.support:support-annotations:${supportLibraryVersion}"
+
+    // Google play services
+    compile "com.google.android.gms:play-services-base:${playServicesVersion}"
+    compile "com.google.android.gms:play-services-games:${playServicesVersion}"
+    compile "com.google.android.gms:play-services-auth:${playServicesVersion}"
+    compile "com.google.android.gms:play-services-ads:${playServicesVersion}"
 
     // RxJava
     compile "io.reactivex.rxjava2:rxandroid:${rxaVersion}"

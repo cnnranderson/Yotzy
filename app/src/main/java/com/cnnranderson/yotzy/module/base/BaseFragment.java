@@ -18,6 +18,7 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        injectFragment();
         Icepick.restoreInstanceState(this, savedInstanceState);
     }
 
@@ -69,4 +70,6 @@ public abstract class BaseFragment extends Fragment {
     protected abstract Unbinder bindViews(View view);
 
     protected abstract int getLayoutId();
+
+    protected abstract void injectFragment();
 }

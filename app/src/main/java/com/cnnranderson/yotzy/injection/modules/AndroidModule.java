@@ -7,6 +7,8 @@ import android.support.v7.preference.PreferenceManager;
 import android.view.inputmethod.InputMethodManager;
 
 import com.cnnranderson.yotzy.Yotzy;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.games.Games;
 
 import javax.inject.Singleton;
 

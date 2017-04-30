@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Google Play game services IDs. -->
+<resources>
+    <string name="app_id">446423428612</string>
+    <string name="package_name">com.cnnranderson.yotzy</string>
+    <string name="achievement_blackout">CgkIhNyjh_8MEAIQAQ</string>
+    <string name="achievement_high_roller">CgkIhNyjh_8MEAIQCA</string>
+    <string name="achievement_triple_ytzy">CgkIhNyjh_8MEAIQBw</string>
+    <string name="achievement_ytzy">CgkIhNyjh_8MEAIQAA</string>
+    <string name="achievement_the_best_around">CgkIhNyjh_8MEAIQAw</string>
+    <string name="achievement_straight_to_the_point">CgkIhNyjh_8MEAIQDA</string>
+    <string name="achievement_tough_luck">CgkIhNyjh_8MEAIQAg</string>
+    <string name="achievement_all_1s">CgkIhNyjh_8MEAIQBA</string>
+    <string name="achievement_all_2s">CgkIhNyjh_8MEAIQBQ</string>
+    <string name="achievement_all_3s">CgkIhNyjh_8MEAIQBg</string>
+    <string name="achievement_all_4s">CgkIhNyjh_8MEAIQCQ</string>
+    <string name="achievement_all_5s">CgkIhNyjh_8MEAIQCg</string>
+    <string name="achievement_all_6s">CgkIhNyjh_8MEAIQCw</string>
+    <string name="achievement_glammer">CgkIhNyjh_8MEAIQDQ</string>
+    <string name="leaderboard_highscore">CgkIhNyjh_8MEAIQDg</string>
+</resources>

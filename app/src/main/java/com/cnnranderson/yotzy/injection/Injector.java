@@ -1,6 +1,7 @@
 package com.cnnranderson.yotzy.injection;
 
 import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
 
 import com.cnnranderson.yotzy.Yotzy;
 import com.cnnranderson.yotzy.injection.components.ActivityComponent;
@@ -9,6 +10,7 @@ import com.cnnranderson.yotzy.injection.components.DaggerAppComponent;
 import com.cnnranderson.yotzy.injection.modules.ActivityModule;
 import com.cnnranderson.yotzy.injection.modules.AndroidModule;
 import com.cnnranderson.yotzy.injection.modules.AppModule;
+import com.cnnranderson.yotzy.injection.modules.DomainModule;
 
 public class Injector {
 
@@ -29,11 +31,11 @@ public class Injector {
         return mAppComponent;
     }
 
-    public static ActivityComponent getActivityScopeInjector(Activity activity) {
+    public static ActivityComponent getActivityScopeInjector(AppCompatActivity activity) {
         ActivityComponent component = mActivityScopeComponentStack.getComponent(activity);
         if (component == null) {
             component = mActivityScopeComponentStack.createComponentForScope(activity,
-                    () -> mAppComponent.plus(new ActivityModule(activity)));
+                    () -> mAppComponent.plus(new ActivityModule(activity), new DomainModule(activity)));
         }
         return component;
     }

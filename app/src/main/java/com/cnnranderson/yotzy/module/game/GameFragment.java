@@ -9,6 +9,7 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.animation.AnimationUtils;
@@ -17,8 +18,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.cnnranderson.yotzy.R;
+import com.cnnranderson.yotzy.injection.Injector;
 import com.cnnranderson.yotzy.module.base.BaseFragment;
 import com.cnnranderson.yotzy.module.base.BasePresenter;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.games.Games;
 
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +44,8 @@ public class GameFragment extends BaseFragment {
 
     @Inject
     GamePresenter mPresenter;
+    @Inject
+    GoogleApiClient mGoogleApiClient;
 
     // Binded Views
     @BindView(R.id.roll_dice)
@@ -76,6 +82,11 @@ public class GameFragment extends BaseFragment {
         GameFragment fragment = new GameFragment();
         fragment.setArguments(new Bundle());
         return fragment;
+    }
+
+    @Override
+    public void injectFragment() {
+        Injector.getActivityScopeInjector((AppCompatActivity) getActivity()).inject(this);
     }
 
     @Override
